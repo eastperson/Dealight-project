@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- 동인 -->
+  
+<mapper namespace="com.dealight.mapper.StoreEvalMapper">
+	
+	<insert id="insert">
+	
+		insert into tbl_store_eval(store_id, avg_rating, revw_tot_num, like_tot_num)
+		values (#{storeId}, #{avgRating}, #{revwTotNum}, #{likeTotNum})
+	
+	</insert>
+
+	<select id="read" resultType="com.dealight.domain.StoreEvalVO">
+		
+		select store_id, ROUND(avg_rating,2) avgRating, revw_tot_num, like_tot_num, regdate, updatedate 
+		from tbl_store_eval where store_id = #{storeId}
+		
+	</select> 
+	
+	<delete id="delete">
+		
+		delete from tbl_store_eval where store_id = #{storeId}
+		
+	</delete>
+	
+	<update id="update">
+	
+		update tbl_store_eval
+		set avg_rating = #{avgRating},
+			revw_tot_num = #{revwTotNum},
+			like_tot_num = #{likeTotNum}
+		where store_id = #{storeId}
+	
+	</update>
+
+<select id="findByStoreID" resultType="com.dealight.domain.StoreEvalVO">
+select *
+from tbl_store_eval
+where store_id = #{storeId}
+</select>
+
+<update id="addRevwRating">
+	UPDATE tbl_store_eval
+	SET avg_rating = ((avg_rating*revw_tot_num)+#{rating})/(revw_tot_num+1),
+	    revw_tot_num = revw_tot_num+1
+	WHERE store_id = #{storeId}
+</update>
+
+<update id="addLike">
+	UPDATE tbl_store_eval
+	SET like_tot_num = like_tot_num + 1
+	WHERE store_id = #{storeId}
+</update>
+<update id="removeLike">
+	UPDATE tbl_store_eval
+	SET like_tot_num = like_tot_num - 1
+	WHERE store_id = #{storeId}
+</update>
+
+</mapper>
